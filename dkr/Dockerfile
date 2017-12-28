@@ -31,7 +31,7 @@ ENV BOOST_ROOT /boost-1.60.0_prefix
 run cd / && \
     git clone https://github.com/decentfoundation/decent-network decent-src && \
     cd decent-src && \
-    git checkout 1.0.1 && \
+    git checkout 1.1.0 && \
     git submodule update --init --recursive
 
 
