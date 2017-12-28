@@ -33,14 +33,10 @@ if [[ ! -f data/decentd/config.ini ]]; then
 fi
 
 IFS=","
-DPORTS=""
+DPORTS=()
 for i in $PORTS; do
     if [[ $i != "" ]]; then
-         if [[ $DPORTS == "" ]]; then
-            DPORTS="-p0.0.0.0:$i:$i"
-        else
-            DPORTS="$DPORTS -p0.0.0.0:$i:$i"
-        fi
+        DPORTS+=("-p0.0.0.0:$i:$i")
     fi
 done
 
@@ -109,13 +105,13 @@ seed_running() {
 
 start() {
     echo $GREEN"Starting container..."$RESET
-    echo "docker run $DPORTS -v /dev/shm:/shm -v "$DATADIR":"$DATADIRD" -d --name $DOCKER_NAME -t decent"
+    echo "docker run ${DPORTS[@]} -v /dev/shm:/shm -v "$DATADIR":"$DATADIRD" -d --name $DOCKER_NAME -t decent"
     seed_exists
     if [[ $? == 0 ]]; then
         docker start $DOCKER_NAME
     else
 
-        docker run $DPORTS -v /dev/shm:/shm -v "$DATADIR":"$DATADIRD" -d \
+        docker run ${DPORTS[@]} -v /dev/shm:/shm -v "$DATADIR":"$DATADIRD" -d \
             --name $DOCKER_NAME -t decent
     fi
 }
@@ -124,7 +120,7 @@ replay() {
     echo "Removing old container"
     docker rm $DOCKER_NAME
     echo "Running DECENT with replay..."
-    docker run $DPORTS -v /dev/shm:/shm -v "$DATADIR":"$DATADIRD" -d \
+    docker run ${DPORTS[@]} -v /dev/shm:/shm -v "$DATADIR":"$DATADIRD" -d \
         --name $DOCKER_NAME -t decent decentd --replay-blockchain
     echo "Started."
 }
@@ -161,7 +157,7 @@ status() {
     if [[ $? == 0 ]]; then
         echo "Container exists?: "$GREEN"YES"$RESET
     else
-        echo "Container exists?: "$RED"NO (!)"$RESET 
+        echo "Container exists?: "$RED"NO (!)"$RESET
         echo "Container doesn't exist, thus it is NOT running. Run $0 build && $0 start"$RESET
         return
     fi
