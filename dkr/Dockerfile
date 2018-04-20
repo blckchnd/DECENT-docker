@@ -1,6 +1,6 @@
 # DECENT Dockerfile
 # Based on Someguy123's Peerplays-in-a-box
-# Modified for DECENT by @furion
+# Modified for DECENT by @blckchndc
 
 # cd ~/dkr && docker build -t decent .
 # docker run -p 0.0.0.0:9777:9777 -v $PWD/data:/decent -d -t decent
@@ -31,7 +31,7 @@ ENV BOOST_ROOT /boost-1.60.0_prefix
 run cd / && \
     git clone https://github.com/decentfoundation/decent-network decent-src && \
     cd decent-src && \
-    git checkout 1.1.0 && \
+    git checkout 1.2.0 && \
     git submodule update --init --recursive
 
 
@@ -42,12 +42,18 @@ RUN cd / && \
     cmake --build . --target all -- -j -l 3.0 && \
     cmake --build . --target install
 
+RUN mkdir /decent && cp /decent-bin/artifacts/prefix/bin/* /decent
+
+RUN rm -rf /decent-src /decent-bin && \
+    apt-get autoremove -y --purge g++ gcc autoconf cmake libboost-all-dev doxygen && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # P2P (seed) port
 EXPOSE 2001
 # API Port
 EXPOSE 8090
 
-RUN cp /decent-bin/artifacts/prefix/bin/* /decent-bin
 VOLUME /root/.decent
-WORKDIR /decent-bin
-ENTRYPOINT ["sh", "-c", "/decent-bin/decentd"]
+WORKDIR /decent
+ENTRYPOINT ["sh", "-c", "/decent/decentd"]

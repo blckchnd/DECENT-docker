@@ -2,7 +2,7 @@
 #
 # DECENT node manager
 # Based on Someguy123's Peerplays-in-a-box
-# Modified for DECENT by @furion
+# Modified for DECENT by @blckchnd
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DOCKER_DIR="$DIR/dkr"
@@ -72,16 +72,16 @@ install() {
     # step 1, get rid of old DECENT
     echo "Stopping and removing any existing DECENT containers"
     docker stop decent
-    echo "Loading image from furion/decent"
-    docker pull furion/decent
+    echo "Loading image from blckchnd/decent"
+    docker pull blckchnd/decent
     echo "Tagging as DECENT"
-    docker tag furion/decent decent
+    docker tag blckchnd/decent decent
     echo "Installation completed. You may now configure or run the server"
 }
 
 deploy() {
-    docker tag decent furion/decent
-    docker push furion/decent
+    docker tag decent blckchnd/decent
+    docker push blckchnd/decent
     echo "Deployment completed."
 }
 
